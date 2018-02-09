@@ -9,12 +9,12 @@ def home(request):
 
 def next(req):
     print("Got next")
-    call(["sh", '-c' , 'xdotool key --window "$(xdotool search "Slides" | head -n1)" Right'])
+    call(['xdotool', 'key', 'Page_Down'])
     return b"ok"
 
 def prev(req):
     print("Got prev")
-    call(["sh", '-c' , 'xdotool key --window "$(xdotool search "Slides" | head -n1)" Left'])
+    call(['xdotool', 'key', 'Page_Up'])
     return b"ok"
 
 
