@@ -35,7 +35,7 @@
     </style>
 
     <script>
-        var secondsRemaining = 60 * 10;
+        var secondsElapsed = 0;
         function nextReq() {
             httpRequest = new XMLHttpRequest();
 
@@ -66,12 +66,15 @@
             prevReq();
         };
 
+        function padz(value){
+            return ('0'+value).slice(-2)
+        }
+
         function tick(){
-            document.getElementById('clock').innerHTML = secondsRemaining;
-            if(secondsRemaining == 0){
-                return;
-            }
-            secondsRemaining--;
+            var minutes = Math.floor(secondsElapsed/60);
+            var seconds = secondsElapsed % 60;
+            document.getElementById('clock').innerHTML = padz(minutes) + ':' + padz(seconds);
+            secondsElapsed++;
             setTimeout('tick()', 1000);
         }
 
