@@ -1,21 +1,36 @@
-from klein import run, route
+from twisted.internet import reactor
+from twisted.web.server import Site
+from twisted.web.resource import Resource
+
 from subprocess import call
 
-@route('/')
 def home(request):
-    return open("./index.html", 'r').read()
+    return open("./index.html", 'rb').read()
 
-@route('/next')
 def next(req):
+    print("Got next")
     call(["sh", '-c' , 'xdotool key --window "$(xdotool search "Slides" | head -n1)" Right'])
-    return "ok"
+    return b"ok"
 
-
-@route('/prev')
 def prev(req):
     print("Got prev")
     call(["sh", '-c' , 'xdotool key --window "$(xdotool search "Slides" | head -n1)" Left'])
-    return "ok"
+    return b"ok"
 
 
-run("0.0.0.0", 8080)
+class CallResource(Resource):
+    def __init__(self, fun):
+        Resource.__init__(self)
+        self.fun = fun
+
+    def render_GET(self, request):
+        return self.fun(request)
+
+root = Resource()
+root.putChild(b'',     CallResource(home))
+root.putChild(b'next', CallResource(next))
+root.putChild(b'prev', CallResource(prev))
+
+site = Site(root)
+reactor.listenTCP(8080, site)
+reactor.run()
