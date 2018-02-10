@@ -2,6 +2,10 @@ from twisted.internet import reactor
 from twisted.web.server import Site
 from twisted.web.resource import Resource
 
+from autobahn.twisted.websocket import WebSocketServerFactory, WebSocketServerProtocol
+# this one isn't documented, except in examples:
+from autobahn.twisted.resource import WebSocketResource
+
 from subprocess import call
 
 
@@ -29,6 +33,10 @@ def prev(req):
     return b"ok"
 
 
+####################
+#  Ajax interface  #
+####################
+
 class CallResource(Resource):
     def __init__(self, fun):
         Resource.__init__(self)
@@ -41,6 +49,24 @@ root = Resource()
 root.putChild(b'',     CallResource(home))
 root.putChild(b'next', CallResource(next))
 root.putChild(b'prev', CallResource(prev))
+
+
+#########################
+#  WebSocket interface  #
+#########################
+
+class ClickerProtocol(WebSocketServerProtocol):
+    def onConnect(self, request):
+        print("Got websocket connection request: ", request)
+
+    def onMessage(self, payload, isBinary):
+        run_action(payload)
+
+clickerFactory = WebSocketServerFactory()
+clickerFactory.protocol = ClickerProtocol
+
+root.putChild(b'ws', WebSocketResource(clickerFactory))
+
 
 site = Site(root)
 reactor.listenTCP(8080, site)

@@ -37,6 +37,10 @@
     </style>
 
     <script>
+        wsuri = 'ws://' + window.location.hostname + ':8080/ws';
+        sock = new WebSocket(wsuri);
+        sock.onopen = function() { console.log('Websocket connected'); }
+
         function nextReq() {
             httpRequest = new XMLHttpRequest();
 
@@ -61,10 +65,13 @@
 
         document.getElementById('next').onclick = function(){
             console.log("NEXT");
-            nextReq();
+            // nextReq();
+            if(sock) { sock.send('n'); }
         };
         document.getElementById('prev').onclick = function(){
-            prevReq();
+            console.log("PREV");
+            // prevReq();
+            if(sock) { sock.send('p'); }
         };
 
 
