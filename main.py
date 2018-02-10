@@ -17,14 +17,14 @@ def run_action(message):
         call(['xdotool', 'key', key])
 
 
-def home(request):
+def home():
     return open("./index.html", 'rb').read()
 
-def next(req):
+def next_button():
     run_action(b'n')
     return b"ok"
 
-def prev(req):
+def prev_button():
     run_action(b'p')
     return b"ok"
 
@@ -35,12 +35,12 @@ class CallResource(Resource):
         self.fun = fun
 
     def render_GET(self, request):
-        return self.fun(request)
+        return self.fun()
 
 root = Resource()
 root.putChild(b'',     CallResource(home))
-root.putChild(b'next', CallResource(next))
-root.putChild(b'prev', CallResource(prev))
+root.putChild(b'next', CallResource(next_button))
+root.putChild(b'prev', CallResource(prev_button))
 
 site = Site(root)
 reactor.listenTCP(8080, site)
