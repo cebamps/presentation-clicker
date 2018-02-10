@@ -20,40 +20,13 @@ def run_action(message):
     if key:
         call(['xdotool', 'key', key])
 
-
-def home(request):
-    return open("./index.html", 'rb').read()
-
-def next(req):
-    run_action(b'n')
-    return b"ok"
-
-def prev(req):
-    run_action(b'p')
-    return b"ok"
-
-
-####################
-#  Ajax interface  #
-####################
-
-class CallResource(Resource):
-    def __init__(self, fun):
-        Resource.__init__(self)
-        self.fun = fun
-
+class RootResource(Resource):
     def render_GET(self, request):
-        return self.fun(request)
+        return open("./index.html", 'rb').read()
 
 root = Resource()
-root.putChild(b'',     CallResource(home))
-root.putChild(b'next', CallResource(next))
-root.putChild(b'prev', CallResource(prev))
+root.putChild(b'', RootResource())
 
-
-#########################
-#  WebSocket interface  #
-#########################
 
 class ClickerProtocol(WebSocketServerProtocol):
     def onConnect(self, request):

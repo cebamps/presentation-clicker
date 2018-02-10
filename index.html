@@ -41,36 +41,12 @@
         sock = new WebSocket(wsuri);
         sock.onopen = function() { console.log('Websocket connected'); }
 
-        function nextReq() {
-            httpRequest = new XMLHttpRequest();
-
-            if (!httpRequest) {
-            alert('Giving up :( Cannot create an XMLHTTP instance');
-            return false;
-            }
-            httpRequest.open('GET', '/next');
-            httpRequest.send();
-        }
-
-        function prevReq() {
-            httpRequest = new XMLHttpRequest();
-
-            if (!httpRequest) {
-            alert('Giving up :( Cannot create an XMLHTTP instance');
-            return false;
-            }
-            httpRequest.open('GET', '/prev');
-            httpRequest.send();
-        }
-
         document.getElementById('next').onclick = function(){
             console.log("NEXT");
-            // nextReq();
             if(sock) { sock.send('n'); }
         };
         document.getElementById('prev').onclick = function(){
             console.log("PREV");
-            // prevReq();
             if(sock) { sock.send('p'); }
         };
 
