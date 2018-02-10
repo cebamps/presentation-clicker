@@ -4,17 +4,28 @@ from twisted.web.resource import Resource
 
 from subprocess import call
 
+
+keys = {
+    b'n': 'Page_Down',
+    b'p': 'Page_Up',
+}
+
+def run_action(message):
+    print("Got ", message)
+    key = keys.get(message, None)
+    if key:
+        call(['xdotool', 'key', key])
+
+
 def home(request):
     return open("./index.html", 'rb').read()
 
 def next(req):
-    print("Got next")
-    call(['xdotool', 'key', 'Page_Down'])
+    run_action(b'n')
     return b"ok"
 
 def prev(req):
-    print("Got prev")
-    call(['xdotool', 'key', 'Page_Up'])
+    run_action(b'p')
     return b"ok"
 
 
