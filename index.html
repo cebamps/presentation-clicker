@@ -35,7 +35,6 @@
     </style>
 
     <script>
-        var secondsElapsed = 0;
         function nextReq() {
             httpRequest = new XMLHttpRequest();
 
@@ -66,8 +65,14 @@
             prevReq();
         };
 
+
         function padz(value){
             return ('0'+value).slice(-2)
+        }
+
+        var secondsElapsed = 0;
+        document.getElementById('clock').ondblclick = function(){
+           launchClock();
         }
 
         function tick(){
@@ -75,9 +80,15 @@
             var seconds = secondsElapsed % 60;
             document.getElementById('clock').innerHTML = padz(minutes) + ':' + padz(seconds);
             secondsElapsed++;
-            setTimeout('tick()', 1000);
         }
 
-        tick();
+        var clockInterval;
+        function launchClock(){
+            if(clockInterval) { clearInterval(clockInterval); }
+            secondsElapsed = 0;
+            tick();
+            clockInterval = setInterval(tick, 1000);
+        }
+        launchClock();
     </script>
 </html>
